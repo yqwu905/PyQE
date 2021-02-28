@@ -23,3 +23,9 @@ class atomic_species:
 
     def __str__(self):
         return "{} {} {}".format(self.x, convert_num(self.mass_x), self.pseudo_pot_x)
+
+    def __eq__(self, other):
+        return self.x == other.x and self.mass_x == other.mass_x and self.pseudo_pot_x == other.pseudo_pot_x
+
+    def __ne__(self, other):
+        return self.x != other.x or self.mass_x != other.mass_x or self.pseudo_pot_x != other.pseudo_pot_x

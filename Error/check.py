@@ -31,6 +31,17 @@ def check_is_real(value):
         raise Exception(f"Invalid variable type: float needed, but {type(value).__name__} was given.")
 
 
+def check_is_int(value):
+    if type(value) is not int:
+        raise Exception(f"Invalid variable type: int needed, but {type(value).__name__} was given.")
+
+
+def check_is_positive_int(value):
+    check_is_int(value)
+    if value <= 0:
+        raise Exception(f"Invalid variable value: should larger than 0, but {value} was given.")
+
+
 def check_is_atom_species(a):
     if type(a).__name__ != 'atomic_species':
         raise Exception(f"Invalid variable type: atomic_species needed, but {type(a).__name__} was given.")
@@ -39,3 +50,24 @@ def check_is_atom_species(a):
 def check_is_atom_position(a):
     if type(a).__name__ != 'atomic_position':
         raise Exception(f"Invalid variable type: atomic_position needed, but {type(a).__name__} was given.")
+
+
+def check_is_dict(dict):
+    if type(dict).__name__ != 'dict':
+        raise Exception(f"Invalid variable type: dict needed, but {type(dict).__name__} was given.")
+
+
+def check_is_configuration(config):
+    if type(config).__name__ != 'configuration':
+        raise Exception(f"Invalid variable type: configuration needed, but {type(config).__name__} was given.")
+
+
+def check_neb_images_match(first_image, last_image):
+    if first_image.atom_num != last_image.atom_num:
+        raise Exception(f"Unable to create NEB object, because first image has {first_image.atom_num} atoms, but "
+                        f"last image has {last_image.atom_num}")
+    for i in range(first_image.atom_num):
+        if first_image.positions[i].a != last_image.positions[i].a:
+            raise Exception(f"Unable to create NEB object, because two atoms with same index in first image and last "
+                            f"image has different atom species. One is:\n{first_image.positions[i].a}, one is:\n"
+                            f"{last_image.positions[i].a}")
