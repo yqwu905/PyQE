@@ -1,4 +1,3 @@
-# Configuration.py
 # Author: Yuanqing Wu
 # Last Modified: 2021/2/28
 # Description: This file implement check and raise errors.
@@ -71,3 +70,47 @@ def check_neb_images_match(first_image, last_image):
             raise Exception(f"Unable to create NEB object, because two atoms with same index in first image and last "
                             f"image has different atom species. One is:\n{first_image.positions[i].a}, one is:\n"
                             f"{last_image.positions[i].a}")
+
+
+def check_is_neb(neb):
+    if type(neb).__name__ != 'neb':
+        raise Exception(f"Invalid variable type: neb needed, but {type(neb).__name__} was given.")
+
+
+def check_setting_dict(s):
+    check_is_dict(s)
+    keywords = ['PATH', 'CONTROL', 'SYSTEM', 'ELECTRONS']
+    for keyword in keywords:
+        if not s.__contains__(keyword):
+            raise Exception(f"Keyword {keyword} not found for Quantum ESPRESSO input setting.")
+
+
+def check_kpoints(k):
+    check_is_dict(k)
+    if not k.__contains__('type'):
+        raise Exception(f"Kpoints type not specified.")
+    if k['type'] in ['tpiba', 'crystal', 'tpiba_b', 'crystal_b', 'crystal_c']:
+        if not k.__contains__('nks'):
+            raise Exception(f"Kpoints' type is {k['type']}, nks was needed, but not specified.")
+        check_is_positive_int(k['nks'])
+        if not k.__contains__('kpoints'):
+            raise Exception("Special kpoints was not specified.")
+        if len(k['kpoints']) != k['nks']:
+            raise Exception(f"nks and special kpoints nums don't match, nks was {k['nks']}, but num of kpoints was"
+                            f" {len(k['kpoints'])}")
+        for i in k['kpoints']:
+            if len(i) != 4:
+                raise Exception(f"Each group should has 4 kpoints, but {len(i)} was given.")
+            for j in i:
+                check_is_real(j)
+    elif k['type'] == 'automatic':
+        if not k.__contains__('kpoints'):
+            raise Exception("Special kpoints was not specified.")
+        if len(k['kpoints']) != 6:
+            raise Exception(f"Invalid kpoints num, should be 6, but {len(k['points'])} was given.")
+        for i in k['kpoints']:
+            check_is_int(i)
+    elif k['type'] == 'gamma':
+        pass
+    else:
+        raise Exception(f"Unknown kpoints type {k['type']}")

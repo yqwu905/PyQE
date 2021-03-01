@@ -1,4 +1,3 @@
-# Configuration.py
 # Author: Yuanqing Wu
 # Last Modified: 2021/2/28
 # Description: This file implement reading the output file created by pw.x.

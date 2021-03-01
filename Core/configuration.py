@@ -1,4 +1,3 @@
-# Configuration.py
 # Author: Yuanqing Wu
 # Last Modified: 2021/2/28
 # Description: This file implement the class for basic structure of atomic configuration.
@@ -89,8 +88,16 @@ class configuration:
     def atom_num(self):
         return len(self.positions)
 
+    @property
+    def atom_list(self):
+        a = []
+        for i in self.positions:
+            if i not in a:
+                a.append(i)
+        return a
+
     def __str__(self):
-        res = str(self.positions[0])
+        res = f"ATOMIC_POSITIONS {self.unit}\n" + str(self.positions[0])
         for i in self.positions[1:]:
-            res += "\n{}".format(i)
+            res += "\n   {}".format(i)
         return res
